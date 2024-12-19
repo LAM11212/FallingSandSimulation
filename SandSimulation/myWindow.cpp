@@ -13,16 +13,18 @@ void myWindow::initWindow()
 	this->window->setFramerateLimit(60);
 }
 
-void myWindow::initSand()
+void myWindow::initSand(float deltaTime)
 {
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	this->dropTimer += deltaTime;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && dropTimer >= dropInterval)
 	{
-		sf::RectangleShape sand(sf::Vector2f(10.0f, 10.0f));
+		sf::RectangleShape sand(sf::Vector2f(this->sandLength, this->sandHeight));
 		sand.setPosition(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
 		sand.setFillColor(sf::Color::Yellow);
 		this->sands.push_back(sand);
 		this->onGround.push_back(false);
 		this->velocityY.push_back(0.0f);
+		this->dropTimer = 0.0f;
 	}
 }
 
@@ -30,7 +32,6 @@ myWindow::myWindow()
 {
 	this->initVars();
 	this->initWindow();
-	this->initSand();
 }
 
 myWindow::~myWindow()
@@ -70,7 +71,7 @@ void myWindow::update()
 	float deltaTime = clock.restart().asSeconds();
 
 	this->updateSand(deltaTime);
-	this->initSand();
+	this->initSand(deltaTime);
 }
 
 void myWindow::render()
